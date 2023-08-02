@@ -222,9 +222,18 @@ class ChatChannel(Channel):
                         reply = super().build_text_to_voice(reply.content)
                         return self._decorate_reply(context, reply)
                     if context.get("isgroup", False):
+                        # 增加小尾巴
+                        reply_text = "@" + context["msg"].actual_user_nickname + " " + reply_text.strip()
+                        reply_text = conf().get("group_chat_reply_prefix", "") + reply_text
+                        reply_text = reply_text + conf().get("single_chat_reply_suffix", "")
+                        ###########
                         reply_text = "@" + context["msg"].actual_user_nickname + "\n" + reply_text.strip()
                         reply_text = conf().get("group_chat_reply_prefix", "") + reply_text + conf().get("group_chat_reply_suffix", "")
                     else:
+                        # 增加小尾巴
+                        reply_text = conf().get("single_chat_reply_prefix", "") + reply_text
+                        reply_text = reply_text + conf().get("single_chat_reply_suffix", "")
+                        ###########
                         reply_text = conf().get("single_chat_reply_prefix", "") + reply_text + conf().get("single_chat_reply_suffix", "")
                     reply.content = reply_text
                 elif reply.type == ReplyType.ERROR or reply.type == ReplyType.INFO:
